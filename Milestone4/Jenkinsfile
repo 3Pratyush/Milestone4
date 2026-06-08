@@ -23,15 +23,18 @@ pipeline {
         }
 
         stage('Clean') {
-            steps {
-                bat 'mvn clean'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                bat 'mvn test'
-            }
+    steps {
+        dir('Milestone4') {
+            bat 'mvn clean'
         }
     }
+}
+
+stage('Test') {
+    steps {
+        dir('Milestone4') {
+            bat 'mvn test'
+        }
+    }
+}
 }
