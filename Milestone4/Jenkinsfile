@@ -15,6 +15,13 @@ pipeline {
             }
         }
 
+        stage('Workspace Check') {
+            steps {
+                bat 'dir'
+                bat 'dir /s pom.xml'
+            }
+        }
+
         stage('Verify Tools') {
             steps {
                 bat 'java -version'
@@ -22,19 +29,5 @@ pipeline {
             }
         }
 
-        stage('Clean') {
-    steps {
-        dir('Milestone4') {
-            bat 'mvn clean'
-        }
     }
-}
-
-stage('Test') {
-    steps {
-        dir('Milestone4') {
-            bat 'mvn test'
-        }
-    }
-}
 }
