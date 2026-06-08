@@ -1,0 +1,62 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven3'      // Configure in Jenkins Global Tool Configuration
+        jdk 'JDK17'         // Configure in Jenkins Global Tool Configuration
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/3Pratyush/Milestone4.git'
+            }
+        }
+
+        stage('Clean') {
+            steps {
+                bat 'mvn clean'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                bat 'mvn compile'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                bat 'mvn test'
+            }
+        }
+    }
+
+    post {
+        always {
+
+            // Publish TestNG Reports
+            publishHTML([
+                allowMissing: true,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'test-output',
+                reportFiles: 'index.html',
+                reportName: 'TestNG Report'
+            ])
+
+            // Archive reports
+            archiveArtifacts artifacts: 'test-output/**/*.*', fingerprint: true
+        }
+
+        success {
+            echo 'Build and Tests Passed Successfully!'
+        }
+
+        failure {
+            echo 'Build Failed!'
+        }
+    }
+}
